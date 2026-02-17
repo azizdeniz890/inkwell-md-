@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inkwell — GitHub README Editor</title>
+  <meta name="description" content="AI-powered Markdown editor for crafting beautiful GitHub README files">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+  <!-- ========== SIDEBAR ========== -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 19l7-7 3 3-7 7-3-3z" />
+          <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
+          <path d="M2 2l7.586 7.586" />
+          <circle cx="11" cy="11" r="2" />
+        </svg>
+        <span>Inkwell</span>
+      </div>
+      <button id="sidebar-toggle-btn" class="icon-btn" title="Close Sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 19l-7-7 7-7" />
+          <path d="M18 19l-7-7 7-7" />
+        </svg>
+      </button>
+    </div>
+
+    <button id="new-project-btn" class="btn btn-primary btn-full">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+      New Project
+    </button>
+
+    <div class="sidebar-section">
+      <h3 class="sidebar-section-title">Projects</h3>
+      <div id="project-list" class="project-list"></div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button id="import-btn" class="btn btn-ghost btn-small" title="Import .md File">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+          <polyline points="17 8 12 3 7 8" />
+          <line x1="12" y1="3" x2="12" y2="15" />
+        </svg>
+        Import
+      </button>
+      <button id="settings-btn" class="btn btn-ghost btn-small" title="Settings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+        Settings
+      </button>
+    </div>
+  </aside>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main id="main-content" class="main-content">
+
+    <!-- ========== TOOLBAR ========== -->
+    <header class="toolbar">
+      <div class="toolbar-left">
+        <button id="sidebar-open-btn" class="icon-btn hidden" title="Open Sidebar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+        <div class="toolbar-divider hidden" id="toolbar-divider-start"></div>
+
+        <!-- Headings -->
+        <div class="toolbar-group">
+          <button class="toolbar-btn" data-action="h1" title="Heading 1 (Ctrl+1)">H1</button>
+          <button class="toolbar-btn" data-action="h2" title="Heading 2 (Ctrl+2)">H2</button>
+          <button class="toolbar-btn" data-action="h3" title="Heading 3 (Ctrl+3)">H3</button>
+          <button class="toolbar-btn toolbar-btn-sm" data-action="h4" title="Heading 4">H4</button>
+          <button class="toolbar-btn toolbar-btn-sm" data-action="h5" title="Heading 5">H5</button>
+          <button class="toolbar-btn toolbar-btn-sm" data-action="h6" title="Heading 6">H6</button>
+        </div>
+        <div class="toolbar-divider"></div>
+
+        <!-- Text formatting -->
+        <div class="toolbar-group">
+          <button class="toolbar-btn" data-action="bold" title="Bold (Ctrl+B)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <path d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z" />
+              <path d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z" />
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="italic" title="Italic (Ctrl+I)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="19" y1="4" x2="10" y2="4" />
+              <line x1="14" y1="20" x2="5" y2="20" />
+              <line x1="15" y1="4" x2="9" y2="20" />
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="strikethrough" title="Strikethrough">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 4H9a3 3 0 00-3 3v0a3 3 0 003 3h6a3 3 0 013 3v0a3 3 0 01-3 3H7" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="highlight" title="Highlight">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="subscript" title="Subscript">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><text
+                x="2" y="13" font-size="13" fill="currentColor" stroke="none" font-weight="bold">X</text><text x="12"
+                y="20" font-size="9" fill="currentColor" stroke="none">2</text></svg>
+          </button>
+          <button class="toolbar-btn" data-action="superscript" title="Superscript">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><text
+                x="2" y="16" font-size="13" fill="currentColor" stroke="none" font-weight="bold">X</text><text x="12"
+                y="10" font-size="9" fill="currentColor" stroke="none">2</text></svg>
+          </button>
+        </div>
+        <div class="toolbar-divider"></div>
+
+        <!-- Code & Links -->
+        <div class="toolbar-group">
+          <button class="toolbar-btn" data-action="code-inline" title="Inline Code">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="16 18 22 12 16 6" />
+              <polyline points="8 6 2 12 8 18" />
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="code-block" title="Code Block">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <polyline points="9 8 5 12 9 16" />
+              <polyline points="15 8 19 12 15 16" />
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="link" title="Link (Ctrl+K)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
+              <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="image" title="Image">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
+            </svg>
+          </button>
+        </div>
+        <div class="toolbar-divider"></div>
+
+        <!-- Lists & Structure -->
+        <div class="toolbar-group">
+          <button class="toolbar-btn" data-action="ul" title="Bullet List">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="8" y1="12" x2="21" y2="12" />
+              <line x1="8" y1="18" x2="21" y2="18" />
+              <circle cx="4" cy="6" r="1" fill="currentColor" />
+              <circle cx="4" cy="12" r="1" fill="currentColor" />
+              <circle cx="4" cy="18" r="1" fill="currentColor" />
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="ol" title="Numbered List">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="10" y1="6" x2="21" y2="6" />
+              <line x1="10" y1="12" x2="21" y2="12" />
+              <line x1="10" y1="18" x2="21" y2="18" /><text x="2" y="8" font-size="8" fill="currentColor"
+                stroke="none">1</text><text x="2" y="14" font-size="8" fill="currentColor" stroke="none">2</text><text
+                x="2" y="20" font-size="8" fill="currentColor" stroke="none">3</text>
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="checklist" title="Task List">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="6" height="6" rx="1" />
+              <path d="M4.5 6l1.5 1.5 3-3" />
+              <line x1="12" y1="6" x2="21" y2="6" />
+              <rect x="3" y="15" width="6" height="6" rx="1" />
+              <line x1="12" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="quote" title="Blockquote">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z" />
+              <path
+                d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3z" />
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="table" title="Table">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <line x1="3" y1="9" x2="21" y2="9" />
+              <line x1="3" y1="15" x2="21" y2="15" />
+              <line x1="9" y1="3" x2="9" y2="21" />
+              <line x1="15" y1="3" x2="15" y2="21" />
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="hr" title="Horizontal Rule">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="2" y1="12" x2="22" y2="12" />
+            </svg>
+          </button>
+        </div>
+        <div class="toolbar-divider"></div>
+
+        <!-- GitHub extras -->
+        <div class="toolbar-group">
+          <button class="toolbar-btn" data-action="badge" title="Shield Badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="1" y="5" width="22" height="14" rx="7" /><text x="12" y="15" text-anchor="middle" font-size="7"
+                fill="currentColor" stroke="none">badge</text>
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="details" title="Collapsible Section">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9" />
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="alert-note" title="GitHub Alert (Note)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="alert-warning" title="GitHub Alert (Warning)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+          </button>
+          <button class="toolbar-btn" data-action="footnote" title="Footnote">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><text
+                x="4" y="14" font-size="11" fill="currentColor" stroke="none">fn</text><text x="14" y="8" font-size="7"
+                fill="currentColor" stroke="none">1</text></svg>
+          </button>
+          <button class="toolbar-btn" data-action="toc" title="Table of Contents">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="5" y2="6" />
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="5" y1="12" x2="7" y2="12" />
+              <line x1="10" y1="12" x2="21" y2="12" />
+              <line x1="5" y1="18" x2="7" y2="18" />
+              <line x1="10" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="toolbar-right">
+        <!-- AI Button -->
+        <div class="dropdown" id="ai-dropdown">
+          <button class="btn btn-accent btn-small" id="ai-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a4 4 0 014 4c0 1.95-2 3-2 8h-4c0-5-2-6.05-2-8a4 4 0 014-4z" />
+              <path d="M10 14h4" />
+              <path d="M10 18h4" />
+              <path d="M11 22h2" />
+            </svg>
+            AI Assistant
+          </button>
+          <div class="dropdown-menu" id="ai-menu">
+            <button class="dropdown-item" data-ai="generate-readme">
+              <span class="dropdown-icon">📄</span> Generate README
+            </button>
+            <button class="dropdown-item" data-ai="improve-text">
+              <span class="dropdown-icon">✨</span> Improve Text
+            </button>
+            <button class="dropdown-item" data-ai="summarize">
+              <span class="dropdown-icon">📝</span> Summarize
+            </button>
+            <button class="dropdown-item" data-ai="suggest-badges">
+              <span class="dropdown-icon">🏷️</span> Suggest Badges
+            </button>
+            <button class="dropdown-item" data-ai="generate-table">
+              <span class="dropdown-icon">📊</span> Generate Table
+            </button>
+            <button class="dropdown-item" data-ai="translate">
+              <span class="dropdown-icon">🌍</span> Translate (EN↔TR)
+            </button>
+            <button class="dropdown-item" data-ai="explain-code">
+              <span class="dropdown-icon">💻</span> Explain Code
+            </button>
+          </div>
+        </div>
+
+        <div class="toolbar-divider"></div>
+
+        <button class="icon-btn" id="copy-btn" title="Copy Markdown">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+          </svg>
+        </button>
+        <button class="icon-btn" id="download-btn" title="Download as .md">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+        </button>
+        <button class="icon-btn" id="fullscreen-btn" title="Focus Mode">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 3 21 3 21 9" />
+            <polyline points="9 21 3 21 3 15" />
+            <line x1="21" y1="3" x2="14" y2="10" />
+            <line x1="3" y1="21" x2="10" y2="14" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ========== EDITOR AREA ========== -->
+    <div class="editor-area">
+      <div class="editor-pane" id="editor-pane">
+        <div class="pane-header">
+          <span class="pane-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+            Editor
+          </span>
+          <span class="pane-info" id="editor-info">0 words · 0 chars</span>
+        </div>
+        <div class="editor-wrapper">
+          <div class="line-numbers" id="line-numbers"></div>
+          <textarea id="editor" spellcheck="false"
+            placeholder="# Your Project Name&#10;&#10;Start writing Markdown here...&#10;&#10;Use the toolbar buttons above or the AI Assistant to generate content."></textarea>
+        </div>
+      </div>
+
+      <div class="resizer" id="resizer">
+        <div class="resizer-line"></div>
+      </div>
+
+      <div class="preview-pane" id="preview-pane">
+        <div class="pane-header">
+          <span class="pane-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            Preview
+          </span>
+          <span class="pane-badge">GitHub Flavored</span>
+        </div>
+        <div id="preview" class="markdown-body">
+          <div class="preview-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+              opacity="0.3">
+              <path d="M14.5 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7.5L14.5 2z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+            <p>Start writing to see the preview...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== STATUS BAR ========== -->
+    <footer class="status-bar">
+      <div class="status-left">
+        <span id="save-status" class="status-item">
+          <span class="status-dot saved"></span>
+          Saved
+        </span>
+        <span class="status-item" id="project-name-display">Untitled Project</span>
+      </div>
+      <div class="status-right">
+        <span class="status-item" id="ai-token-display" title="AI tokens used this session">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" /><text x="12" y="16" text-anchor="middle" font-size="10" fill="currentColor"
+              stroke="none">$</text>
+          </svg>
+          <span id="token-count">0 tokens</span>
+        </span>
+        <span class="status-item" id="word-count">0 words</span>
+        <span class="status-item" id="char-count">0 chars</span>
+        <span class="status-item" id="line-count">Ln 1</span>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ========== SETTINGS MODAL ========== -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Settings</h2>
+        <button class="icon-btn modal-close" data-close="settings-modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <label class="setting-label">OpenAI API Key</label>
+          <p class="setting-hint">Get your key at <a href="https://platform.openai.com/api-keys"
+              target="_blank">platform.openai.com/api-keys</a></p>
+          <div class="input-group">
+            <input type="password" id="api-key-input" class="input" placeholder="sk-proj-...">
+            <button class="btn btn-ghost btn-small" id="toggle-key-visibility">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="setting-group">
+          <label class="setting-label">Auto Save</label>
+          <div class="toggle-wrapper">
+            <input type="checkbox" id="auto-save-toggle" class="toggle" checked>
+            <label for="auto-save-toggle" class="toggle-label">Save automatically every 30 seconds</label>
+          </div>
+        </div>
+        <div class="setting-group">
+          <label class="setting-label">Editor Font Size</label>
+          <select id="font-size-select" class="select">
+            <option value="13">13px</option>
+            <option value="14" selected>14px</option>
+            <option value="15">15px</option>
+            <option value="16">16px</option>
+            <option value="18">18px</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="save-settings-btn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== AI MODAL ========== -->
+  <div class="modal-overlay" id="ai-modal">
+    <div class="modal modal-ai">
+      <div class="modal-header">
+        <h2 id="ai-modal-title">AI Assistant</h2>
+        <button class="icon-btn modal-close" data-close="ai-modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="ai-input-group">
+          <label class="setting-label" id="ai-input-label">Describe your project</label>
+          <textarea id="ai-input" class="input ai-textarea" rows="4" placeholder="Type a description..."></textarea>
+        </div>
+        <div id="ai-loading" class="ai-loading hidden">
+          <div class="spinner"></div>
+          <span>AI is thinking...</span>
+        </div>
+        <div id="ai-result" class="ai-result hidden">
+          <div class="ai-result-header">
+            <span>Result</span>
+            <div class="ai-result-meta">
+              <span id="ai-result-tokens" class="ai-token-badge" title="Tokens used">0 tokens</span>
+              <span id="ai-result-cost" class="ai-cost-badge" title="Estimated cost">$0.000</span>
+            </div>
+          </div>
+          <pre id="ai-result-text" class="ai-result-text"></pre>
+          <div class="ai-result-actions">
+            <button class="btn btn-ghost btn-small" id="ai-copy-result-btn">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+              </svg>
+              Copy
+            </button>
+            <button class="btn btn-primary btn-small" id="ai-insert-btn">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 10 20 15 15 20" />
+                <path d="M4 4v7a4 4 0 004 4h12" />
+              </svg>
+              Insert into Editor
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="ai-session-stats">
+          <span class="ai-stat-label">Session:</span>
+          <span id="ai-session-tokens" class="ai-token-badge">0 tokens</span>
+          <span id="ai-session-cost" class="ai-cost-badge">$0.000</span>
+        </div>
+        <div class="ai-footer-buttons">
+          <button class="btn btn-ghost" data-close="ai-modal">Cancel</button>
+          <button class="btn btn-accent" id="ai-submit-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a4 4 0 014 4c0 1.95-2 3-2 8h-4c0-5-2-6.05-2-8a4 4 0 014-4z" />
+            </svg>
+            Generate
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== RENAME MODAL ========== -->
+  <div class="modal-overlay" id="rename-modal">
+    <div class="modal modal-small">
+      <div class="modal-header">
+        <h2>Rename Project</h2>
+        <button class="icon-btn modal-close" data-close="rename-modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="rename-input" class="input" placeholder="Project name">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="rename-modal">Cancel</button>
+        <button class="btn btn-primary" id="rename-save-btn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== TOAST ========== -->
+  <div id="toast-container" class="toast-container"></div>
+  <input type="file" id="file-input" accept=".md,.markdown,.txt" style="display:none">
+
+  <script type="module" src="/main.js"></script>
+</body>
+
+</html>

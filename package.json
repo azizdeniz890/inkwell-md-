@@ -1,0 +1,27 @@
+{
+  "name": "inkwell-editor",
+  "version": "1.0.0",
+  "description": "AI-powered Markdown editor for crafting beautiful GitHub README files",
+  "author": "azizd",
+  "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "markdown",
+    "editor",
+    "readme",
+    "github",
+    "ai",
+    "openai",
+    "gfm"
+  ],
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "highlight.js": "^11.9.0",
+    "marked": "^12.0.2",
+    "vite": "^6.3.5"
+  }
+}
