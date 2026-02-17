@@ -14,6 +14,14 @@
 
 ---
 
+<div align="center">
+
+![Inkwell Editor Screenshot](screenshot.png)
+
+*Split-pane Markdown editor with live preview and AI assistant*
+
+</div>
+
 ## ✨ Features
 
 - **Live Preview** — Split-pane editor with real-time GitHub Flavored Markdown rendering
